@@ -1,21 +1,49 @@
-import { Activity } from 'lucide-react'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { AuthProvider } from './features/auth/AuthProvider'
+import { LoginPage } from './features/auth/LoginPage'
+import { RequireAuth } from './features/auth/RequireAuth'
+import { AppShell } from './features/layout/AppShell'
+import { DashboardPage } from './pages/DashboardPage'
+import { LandingPage } from './pages/LandingPage'
+import { RepoDetailPage } from './pages/RepoDetailPage'
+import { ReposPage } from './pages/ReposPage'
+import { SearchPage } from './pages/SearchPage'
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 30_000,
+      retry: 1,
+    },
+  },
+})
 
 export default function App() {
   return (
-    <main className="mx-auto flex min-h-svh max-w-3xl flex-col justify-center px-6 py-16">
-      <p className="font-display text-sm font-semibold tracking-wide text-brand uppercase">
-        RepoPulse
-      </p>
-      <h1 className="font-display mt-3 text-4xl font-bold tracking-tight text-ink sm:text-5xl">
-        Track GitHub repos from your own API
-      </h1>
-      <p className="mt-4 max-w-xl text-lg text-muted">
-        Search, save, and chart repository stats backed by Firestore.
-      </p>
-      <div className="mt-8 inline-flex items-center gap-2 text-sm text-muted">
-        <Activity className="size-4 text-brand" aria-hidden />
-        NestJS API · React dashboard
-      </div>
-    </main>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route
+              path="/app"
+              element={
+                <RequireAuth>
+                  <AppShell />
+                </RequireAuth>
+              }
+            >
+              <Route index element={<DashboardPage />} />
+              <Route path="search" element={<SearchPage />} />
+              <Route path="repos" element={<ReposPage />} />
+              <Route path="repos/:owner/:name" element={<RepoDetailPage />} />
+            </Route>
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </QueryClientProvider>
   )
 }

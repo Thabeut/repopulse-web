@@ -29,6 +29,13 @@ http://localhost:5173
 
 Point `VITE_API_BASE_URL` at the API (local or Render).
 
+### Firebase web config
+
+1. Firebase Console → Authentication → enable **Google** provider  
+2. Project settings → add a **Web** app → copy config into `web/.env` (`VITE_FIREBASE_*`)  
+3. Authorized domains include `localhost`  
+4. `npm run dev` → open `/login` → Continue with Google → `/app` should show `/auth/me` payload  
+
 ## Docker (optional)
 
 ```bash
