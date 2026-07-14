@@ -2,8 +2,6 @@ import { api } from './api'
 import type {
   ApiSuccess,
   DashboardSummary,
-  HistoryMetric,
-  HistoryPoint,
   LanguageShare,
   PaginationMeta,
   SavedRepository,
@@ -67,13 +65,6 @@ export function deleteRepository(id: string) {
 
 export function getDashboard() {
   return getData<DashboardSummary>('/analytics/dashboard')
-}
-
-export function getHistory(id: string, metric: HistoryMetric = 'stars') {
-  return getData<{ metric: HistoryMetric; series: HistoryPoint[] }>(
-    `/analytics/repositories/${id}/history`,
-    { metric },
-  )
 }
 
 export function getLanguages(id: string) {

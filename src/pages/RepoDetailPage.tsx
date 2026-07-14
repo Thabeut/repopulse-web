@@ -11,13 +11,11 @@ import {
 import {
   CommitActivityChart,
   LanguagesChart,
-  StarsHistoryChart,
 } from '../features/charts/RepoCharts'
 import { ChartSkeleton, RepoDetailSkeleton } from '../components/Skeleton'
 import {
   deleteRepository,
   getCommitActivity,
-  getHistory,
   getLanguages,
   getRepositoryByFullName,
   refreshRepository,
@@ -33,12 +31,6 @@ export function RepoDetailPage() {
     queryKey: ['repository', owner, name],
     enabled: Boolean(owner && name),
     queryFn: async () => (await getRepositoryByFullName(owner, name)).data,
-  })
-
-  const history = useQuery({
-    queryKey: ['history', repo.data?.id, 'stars'],
-    enabled: Boolean(repo.data?.id),
-    queryFn: async () => (await getHistory(repo.data!.id, 'stars')).data,
   })
 
   const languages = useQuery({
@@ -57,7 +49,6 @@ export function RepoDetailPage() {
     mutationFn: () => refreshRepository(repo.data!.id),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['repository', owner, name] })
-      void queryClient.invalidateQueries({ queryKey: ['history'] })
       void queryClient.invalidateQueries({ queryKey: ['languages'] })
       void queryClient.invalidateQueries({ queryKey: ['commit-activity'] })
       void queryClient.invalidateQueries({ queryKey: ['repositories'] })
@@ -209,18 +200,6 @@ export function RepoDetailPage() {
           </ul>
         )}
       </header>
-
-      <section>
-        <h2 className="font-display text-xl font-semibold text-ink">Stars over time</h2>
-        <p className="mt-1 text-sm text-muted">From Firestore snapshots on save, refresh, and cron.</p>
-        <div className="mt-4">
-          {history.isLoading ? (
-            <ChartSkeleton />
-          ) : (
-            <StarsHistoryChart series={history.data?.series ?? []} />
-          )}
-        </div>
-      </section>
 
       <div className="grid gap-10 md:grid-cols-2">
         <section>

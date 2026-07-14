@@ -85,11 +85,6 @@ export interface SavedRepository {
   updatedAt: string
 }
 
-export interface HistoryPoint {
-  t: string
-  v: number
-}
-
 export interface LanguageShare {
   name: string
   bytes: number
@@ -107,5 +102,3 @@ export interface DashboardSummary {
     stars: number
   }>
 }
-
-export type HistoryMetric = 'stars' | 'forks' | 'openIssues' | 'watchers'
