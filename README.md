@@ -2,20 +2,31 @@
 
 React dashboard for RepoPulse. Talks only to the RepoPulse API (not GitHub directly).
 
+**Live:** https://web-thabet-kh.vercel.app  
+**API:** https://repopulse-api.onrender.com/api/v1  
+**Repo:** https://github.com/Thabeut/repopulse-web
+
+Sign in with Google, then search / save GitHub repos, browse your library, and view stars / languages / commit charts.
+
 ## Stack
 
-React · TypeScript · Vite · Tailwind · TanStack Query · Recharts · Firebase Auth
+React · TypeScript · Vite · Tailwind · TanStack Query · Recharts · Firebase Auth · lucide-react
 
-## Deploy
+## Deploy (Vercel)
 
-**Vercel** — import this repo:
+Project linked to GitHub `main`. Production env:
 
-- Framework: Vite
-- Build: `npm run build`
-- Output: `dist`
-- Env: copy from `.env.example` (`VITE_API_BASE_URL` = your Render API URL + `/api/v1`)
+```bash
+VITE_API_BASE_URL=https://repopulse-api.onrender.com/api/v1
+VITE_FIREBASE_API_KEY=...
+VITE_FIREBASE_AUTH_DOMAIN=repopulse-f10fe.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=repopulse-f10fe
+VITE_FIREBASE_APP_ID=...
+```
 
 `vercel.json` handles SPA rewrites.
+
+Firebase Console → Authentication → **Authorized domains** must include `web-thabet-kh.vercel.app`.
 
 ## Local
 
@@ -27,20 +38,31 @@ npm run dev
 
 http://localhost:5173
 
-Point `VITE_API_BASE_URL` at the API (local or Render).
+Point `VITE_API_BASE_URL` at local API (`http://localhost:3000/api/v1`) or production Render.
 
 ### Firebase web config
 
-1. Firebase Console → Authentication → enable **Google** provider  
-2. Project settings → add a **Web** app → copy config into `web/.env` (`VITE_FIREBASE_*`)  
+1. Enable **Google** sign-in in Firebase Authentication  
+2. Add a **Web** app → copy config into `.env` (`VITE_FIREBASE_*`)  
 3. Authorized domains include `localhost`  
-4. `npm run dev` → open `/login` → Continue with Google → `/app` should show `/auth/me` payload  
+4. Open `/login` → Continue with Google → `/app`
+
+## Routes
+
+| Path | Page |
+|------|------|
+| `/` | Landing |
+| `/login` | Google sign-in |
+| `/app` | Dashboard |
+| `/app/search` | GitHub search + save |
+| `/app/repos` | Saved library |
+| `/app/repos/:owner/:name` | Detail + charts |
 
 ## Docker (optional)
 
 ```bash
 docker build \
-  --build-arg VITE_API_BASE_URL=https://your-api.onrender.com/api/v1 \
+  --build-arg VITE_API_BASE_URL=https://repopulse-api.onrender.com/api/v1 \
   -t repopulse-web .
 docker run -p 8080:80 repopulse-web
 ```
