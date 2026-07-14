@@ -13,6 +13,7 @@ import {
   LanguagesChart,
   StarsHistoryChart,
 } from '../features/charts/RepoCharts'
+import { ChartSkeleton, RepoDetailSkeleton } from '../components/Skeleton'
 import {
   deleteRepository,
   getCommitActivity,
@@ -83,7 +84,7 @@ export function RepoDetailPage() {
   })
 
   if (repo.isLoading) {
-    return <p className="text-muted">Loading repository…</p>
+    return <RepoDetailSkeleton />
   }
 
   if (repo.isError || !repo.data) {
@@ -214,7 +215,7 @@ export function RepoDetailPage() {
         <p className="mt-1 text-sm text-muted">From Firestore snapshots on save, refresh, and cron.</p>
         <div className="mt-4">
           {history.isLoading ? (
-            <p className="text-sm text-muted">Loading chart…</p>
+            <ChartSkeleton />
           ) : (
             <StarsHistoryChart series={history.data?.series ?? []} />
           )}
@@ -226,7 +227,7 @@ export function RepoDetailPage() {
           <h2 className="font-display text-xl font-semibold text-ink">Languages</h2>
           <div className="mt-4">
             {languages.isLoading ? (
-              <p className="text-sm text-muted">Loading…</p>
+              <ChartSkeleton className="h-56" />
             ) : (
               <LanguagesChart languages={languages.data?.languages ?? []} />
             )}
@@ -237,7 +238,7 @@ export function RepoDetailPage() {
           <p className="mt-1 text-sm text-muted">Weekly commit totals from GitHub.</p>
           <div className="mt-4">
             {activity.isLoading ? (
-              <p className="text-sm text-muted">Loading…</p>
+              <ChartSkeleton className="h-56" />
             ) : (
               <CommitActivityChart activity={activity.data?.activity ?? []} />
             )}

@@ -1,5 +1,6 @@
 import { Navigate, useLocation } from 'react-router-dom'
 import type { ReactNode } from 'react'
+import { AppShellSkeleton } from '../../components/Skeleton'
 import { useAuth } from './AuthProvider'
 
 export function RequireAuth({ children }: { children: ReactNode }) {
@@ -7,11 +8,7 @@ export function RequireAuth({ children }: { children: ReactNode }) {
   const location = useLocation()
 
   if (loading) {
-    return (
-      <main className="mx-auto flex min-h-svh max-w-5xl items-center px-6">
-        <p className="animate-fade-in text-muted">Loading…</p>
-      </main>
-    )
+    return <AppShellSkeleton />
   }
 
   if (!configured) {

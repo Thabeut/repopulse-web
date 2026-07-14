@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { GitFork, Star } from 'lucide-react'
+import { DashboardSkeleton } from '../components/Skeleton'
 import { getDashboard } from '../lib/repopulse'
 
 function formatRelative(iso: string | null) {
@@ -20,6 +21,10 @@ export function DashboardPage() {
     queryFn: async () => (await getDashboard()).data,
   })
 
+  if (dash.isLoading) {
+    return <DashboardSkeleton />
+  }
+
   return (
     <div className="space-y-10">
       <header>
@@ -27,7 +32,6 @@ export function DashboardPage() {
         <p className="mt-2 text-muted">Overview of your tracked GitHub repositories.</p>
       </header>
 
-      {dash.isLoading && <p className="text-muted">Loading overview…</p>}
       {dash.isError && (
         <p className="text-sm text-red-600">Could not load dashboard. Is the API running?</p>
       )}

@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { GitFork, Search, Star } from 'lucide-react'
+import { SearchResultsSkeleton } from '../components/Skeleton'
 import { saveRepository, searchRepositories } from '../lib/repopulse'
 import type { SearchItem } from '../types/api'
 
@@ -63,12 +64,12 @@ export function SearchPage() {
         </button>
       </form>
 
-      {results.isFetching && <p className="text-sm text-muted">Searching…</p>}
-      {results.isError && (
+      {results.isFetching && <SearchResultsSkeleton />}
+      {results.isError && !results.isFetching && (
         <p className="text-sm text-red-600">Search failed. Check your API and GitHub token.</p>
       )}
 
-      {results.data && (
+      {results.data && !results.isFetching && (
         <div>
           <p className="text-sm text-muted">
             {results.data.total.toLocaleString()} results

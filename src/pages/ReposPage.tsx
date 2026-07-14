@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { GitFork, Heart, Star, Trash2 } from 'lucide-react'
+import { RepoListSkeleton } from '../components/Skeleton'
 import {
   deleteRepository,
   listRepositories,
@@ -52,6 +53,8 @@ export function ReposPage() {
     },
   })
 
+  const showSkeleton = list.isLoading || list.isFetching
+
   return (
     <div className="space-y-8">
       <header>
@@ -86,10 +89,12 @@ export function ReposPage() {
         </select>
       </div>
 
-      {list.isLoading && <p className="text-muted">Loading repos…</p>}
-      {list.isError && <p className="text-sm text-red-600">Failed to load repositories.</p>}
+      {showSkeleton && <RepoListSkeleton />}
+      {list.isError && !showSkeleton && (
+        <p className="text-sm text-red-600">Failed to load repositories.</p>
+      )}
 
-      {list.data && list.data.items.length === 0 && (
+      {list.data && !showSkeleton && list.data.items.length === 0 && (
         <p className="text-sm text-muted">
           Nothing here yet.{' '}
           <Link to="/app/search" className="text-brand underline">
@@ -99,7 +104,7 @@ export function ReposPage() {
         </p>
       )}
 
-      {list.data && list.data.items.length > 0 && (
+      {list.data && !showSkeleton && list.data.items.length > 0 && (
         <ul className="divide-y divide-slate-200/80 border-y border-slate-200/80">
           {list.data.items.map((repo) => (
             <RepoRow
